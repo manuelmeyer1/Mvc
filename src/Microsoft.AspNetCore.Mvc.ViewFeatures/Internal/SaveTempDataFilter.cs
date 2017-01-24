@@ -29,16 +29,6 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
         /// <inheritdoc />
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-        }
-
-        /// <inheritdoc />
-        public void OnResourceExecuted(ResourceExecutedContext context)
-        {
-        }
-
-        /// <inheritdoc />
-        public void OnResultExecuting(ResultExecutingContext context)
-        {
             context.HttpContext.Response.OnStarting((state) =>
             {
                 var saveTempDataContext = (SaveTempDataContext)state;
@@ -70,6 +60,16 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
         }
 
         /// <inheritdoc />
+        public void OnResourceExecuted(ResourceExecutedContext context)
+        {
+        }
+
+        /// <inheritdoc />
+        public void OnResultExecuting(ResultExecutingContext context)
+        {
+        }
+
+        /// <inheritdoc />
         public void OnResultExecuted(ResultExecutedContext context)
         {
             // We are doing this here again because the OnStarting delegate above might get fired too late in scenarios
@@ -78,7 +78,10 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
             if (!context.HttpContext.Response.HasStarted)
             {
                 SaveTempData(context.Result, _factory, context.HttpContext);
-                context.HttpContext.Items.Add(TempDataSavedKey, true);
+                if (!context.HttpContext.Items.ContainsKey(TempDataSavedKey))
+                {
+                    context.HttpContext.Items.Add(TempDataSavedKey, true);
+                }
             }
         }
 
