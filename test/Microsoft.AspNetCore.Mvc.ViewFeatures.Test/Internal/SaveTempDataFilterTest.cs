@@ -40,13 +40,8 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
                 .Setup(f => f.GetTempData(It.IsAny<HttpContext>()))
                 .Verifiable();
             var filter = new SaveTempDataFilter(tempDataFactory.Object);
-
             var context = GetResultExecutingContext(httpContext);
-
-            var data = Encoding.ASCII.GetBytes("this is a string");
-
             filter.OnResultExecuting(context);
-
 
             // Act
             await responseFeature.FireOnSendingHeadersAsync();
