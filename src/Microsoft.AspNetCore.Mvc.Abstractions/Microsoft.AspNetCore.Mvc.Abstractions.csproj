@@ -41,11 +41,6 @@ Microsoft.AspNetCore.Mvc.IActionResult</Description>
     <PackageReference Include="NETStandard.Library" Version="1.6.2-*" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.4.0-*" />
     <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.4.0-*" />

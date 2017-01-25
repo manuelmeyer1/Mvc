@@ -1,22 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\build\common.props" />
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp1.1;net451</TargetFrameworks>
     <DefineConstants>$(DefineConstants);SOME_TEST_DEFINE</DefineConstants>
     <WarningsAsErrors>true</WarningsAsErrors>
     <PreserveCompilationContext>true</PreserveCompilationContext>
-    <AssemblyName>Microsoft.AspNetCore.Mvc.Razor.Test</AssemblyName>
-    <AssemblyOriginatorKeyFile>../../build/Key.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>Microsoft.AspNetCore.Mvc.Razor.Test</PackageId>
-    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\shared\Microsoft.AspNetCore.Mvc.TestDiagnosticListener.Sources\**\*.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Microsoft.AspNetCore.Mvc\Microsoft.AspNetCore.Mvc.csproj" />
     <ProjectReference Include="..\Microsoft.AspNetCore.Mvc.TestCommon\Microsoft.AspNetCore.Mvc.TestCommon.csproj" />
-    <ProjectReference Include="..\Microsoft.AspNetCore.Mvc.TestDiagnosticListener.Sources\Microsoft.AspNetCore.Mvc.TestDiagnosticListener.Sources.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,11 +34,6 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
     <PackageReference Include="Microsoft.NETCore.App" Version="1.2.0-*" />
     <PackageReference Include="System.Diagnostics.TraceSource" Version="4.4.0-*" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net451' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
 </Project>
