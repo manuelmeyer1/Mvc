@@ -29,34 +29,37 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
         /// <inheritdoc />
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            context.HttpContext.Response.OnStarting((state) =>
+            if (!context.HttpContext.Response.HasStarted)
             {
-                var saveTempDataContext = (SaveTempDataContext)state;
-
-                // If temp data was already saved, skip trying to save again as the calls here would potentially fail
-                // because the session feature might not be available at this point.
-                // Example: An action returns NoContentResult and since NoContentResult does not write anything to
-                // the body of the response, this delegate would get executed way late in the pipeline at which point
-                // the session feature would have been removed.
-                object obj;
-                if (saveTempDataContext.HttpContext.Items.TryGetValue(TempDataSavedKey, out obj))
+                context.HttpContext.Response.OnStarting((state) =>
                 {
+                    var saveTempDataContext = (SaveTempDataContext)state;
+
+                    // If temp data was already saved, skip trying to save again as the calls here would potentially fail
+                    // because the session feature might not be available at this point.
+                    // Example: An action returns NoContentResult and since NoContentResult does not write anything to
+                    // the body of the response, this delegate would get executed way late in the pipeline at which point
+                    // the session feature would have been removed.
+                    object obj;
+                    if (saveTempDataContext.HttpContext.Items.TryGetValue(TempDataSavedKey, out obj))
+                    {
+                        return TaskCache.CompletedTask;
+                    }
+
+                    SaveTempData(
+                        saveTempDataContext.ActionResult,
+                        saveTempDataContext.TempDataDictionaryFactory,
+                        saveTempDataContext.HttpContext);
+
                     return TaskCache.CompletedTask;
-                }
-
-                SaveTempData(
-                    saveTempDataContext.ActionResult,
-                    saveTempDataContext.TempDataDictionaryFactory,
-                    saveTempDataContext.HttpContext);
-
-                return TaskCache.CompletedTask;
-            },
-            state: new SaveTempDataContext()
-            {
-                HttpContext = context.HttpContext,
-                ActionResult = context.Result,
-                TempDataDictionaryFactory = _factory
-            });
+                },
+               state: new SaveTempDataContext()
+               {
+                   HttpContext = context.HttpContext,
+                   ActionResult = context.Result,
+                   TempDataDictionaryFactory = _factory
+               });
+            }
         }
 
         /// <inheritdoc />
@@ -78,6 +81,7 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
             if (!context.HttpContext.Response.HasStarted)
             {
                 SaveTempData(context.Result, _factory, context.HttpContext);
+                // If SaveTempDataFilter got added twice this might already be in there.
                 if (!context.HttpContext.Items.ContainsKey(TempDataSavedKey))
                 {
                     context.HttpContext.Items.Add(TempDataSavedKey, true);
