@@ -44,10 +44,8 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
             filter.OnResultExecuting(context);
 
             // Act
+            // Checking it doesn't throw
             await responseFeature.FireOnSendingHeadersAsync();
-
-            // Assert
-            Assert.True(true);
         }
 
         [Fact]
