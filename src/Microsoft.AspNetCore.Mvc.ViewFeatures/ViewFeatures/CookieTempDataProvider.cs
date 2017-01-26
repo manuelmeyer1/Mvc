@@ -40,9 +40,9 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (context.Request.Cookies.ContainsKey(CookieName))
+            if (context.Request.Cookies.ContainsKey(_options.Value.CookieName))
             {
-                var encodedValue = _chunkingCookieManager.GetRequestCookie(context, CookieName);
+                var encodedValue = _chunkingCookieManager.GetRequestCookie(context, _options.Value.CookieName);
                 if (!string.IsNullOrEmpty(encodedValue))
                 {
                     var protectedData = Base64UrlTextEncoder.Decode(encodedValue);
@@ -75,11 +75,11 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures
                 var bytes = _tempDataSerializer.Serialize(values);
                 bytes = _dataProtector.Protect(bytes);
                 var encodedValue = Base64UrlTextEncoder.Encode(bytes);
-                _chunkingCookieManager.AppendResponseCookie(context, CookieName, encodedValue, cookieOptions);
+                _chunkingCookieManager.AppendResponseCookie(context, _options.Value.CookieName, encodedValue, cookieOptions);
             }
             else
             {
-                _chunkingCookieManager.DeleteCookie(context, CookieName, cookieOptions);
+                _chunkingCookieManager.DeleteCookie(context, _options.Value.CookieName, cookieOptions);
             }
         }
 
