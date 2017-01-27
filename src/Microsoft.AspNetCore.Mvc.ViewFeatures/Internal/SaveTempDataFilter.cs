@@ -47,16 +47,15 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
                     }
 
                     SaveTempData(
-                        saveTempDataContext.ActionResult,
-                        saveTempDataContext.TempDataDictionaryFactory,
-                        saveTempDataContext.HttpContext);
+                        result: null,
+                        factory: saveTempDataContext.TempDataDictionaryFactory,
+                        httpContext: saveTempDataContext.HttpContext);
 
                     return TaskCache.CompletedTask;
                 },
                state: new SaveTempDataContext()
                {
                    HttpContext = context.HttpContext,
-                   ActionResult = context.Result,
                    TempDataDictionaryFactory = _factory
                });
             }
@@ -101,7 +100,6 @@ namespace Microsoft.AspNetCore.Mvc.ViewFeatures.Internal
         private class SaveTempDataContext
         {
             public HttpContext HttpContext { get; set; }
-            public IActionResult ActionResult { get; set; }
             public ITempDataDictionaryFactory TempDataDictionaryFactory { get; set; }
         }
     }
